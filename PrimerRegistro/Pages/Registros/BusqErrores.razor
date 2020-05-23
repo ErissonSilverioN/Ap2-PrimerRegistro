@@ -1,0 +1,152 @@
+﻿
+@page "/BusqErrores"
+@page "/BusqErrores/{ErrorId:int}"
+
+@using PrimerRegistro.Models;
+@using PrimerRegistro.BLL;
+@*@inject IToastService toast*@
+
+
+<h3>BusqErrores</h3>
+
+
+<EditForm Model="errores" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Errores</h3>
+
+        </div>
+
+        <div class="card-body">
+            <form>
+
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class=" form-group">
+                            <label>ErrorId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="errores.ErrorId" class="form-control col-4"></InputNumber>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">Buscar</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="errores.Fecha" class="form-control"></InputDate>
+                    <ValidationMessage For="@(() => errores.Fecha)"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Hallazgo</label>
+                    <InputTextArea @bind-Value="errores.Hallazgo" class="form-control"></InputTextArea>
+                    <ValidationMessage For="@(() => errores.Hallazgo)"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Ruta del Error</label>
+                    <InputText @bind-Value="errores.Ruta" class="form-control"></InputText>
+                    <ValidationMessage For="@(() => errores.Ruta)"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Importancia</label>
+                    <InputNumber @bind-Value="errores.Importancia" class="form-control"></InputNumber>
+                    <ValidationMessage For="@(() => errores.Importancia)"></ValidationMessage>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success">Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</EditForm>
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int ErrorId { get; set; }
+
+    private Errores errores = new Errores();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        Buscar();
+
+        base.OnInitialized();
+    }
+
+    private void Nuevo()
+    {
+        errores = new Errores();
+
+    }
+
+    private void Buscar()
+    {
+        if (errores.ErrorId > 0)
+        {
+            var encontrado = ErroresBLL.Buscar(errores.ErrorId);
+
+            if (encontrado != null)
+                this.errores = encontrado;
+
+
+            //toast.ShowWarning("No Encontrado");
+        }
+
+
+    }
+
+
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = ErroresBLL.Guardar(errores);
+
+        if (guardo)
+        {
+            Nuevo();
+            Console.WriteLine("Guardo");
+
+        }
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = ErroresBLL.Eliminar(errores.ErrorId);
+
+        if (elimino)
+        {
+            Nuevo();
+            Console.WriteLine("Elimino");
+        }
+    }
+
+}
