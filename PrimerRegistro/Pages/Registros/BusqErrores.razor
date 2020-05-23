@@ -4,8 +4,10 @@
 
 @using PrimerRegistro.Models;
 @using PrimerRegistro.BLL;
-@*@inject IToastService toast*@
+@using Blazored.Toast.Services;
 
+
+@inject IToastService toastService
 
 <h3>BusqErrores</h3>
 
@@ -115,7 +117,7 @@
                 this.errores = encontrado;
 
 
-            //toast.ShowWarning("No Encontrado");
+            toastService.ShowWarning("No Encontrado");
         }
 
 
@@ -131,9 +133,11 @@
         if (guardo)
         {
             Nuevo();
-            Console.WriteLine("Guardo");
+            toastService.ShowSuccess("Guardado correctamente");
 
         }
+        else
+            toastService.ShowError("No fue posible guardar");
     }
 
     public void Eliminar()
@@ -145,7 +149,8 @@
         if (elimino)
         {
             Nuevo();
-            Console.WriteLine("Elimino");
+            toastService.ShowError("Eliminado");
+
         }
     }
 
